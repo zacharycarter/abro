@@ -18,7 +18,7 @@ type
 
 proc initApp(app: App) =
   info "Initializing application..."
-  discard app.engine.assetManager.load("test01.png", AssetType.TEXTURE)
+  discard app.engine.assetManager.load("textures/unpacked/test01.png", AssetType.TEXTURE)
   info "Application initialized."
 
 proc updateApp(app: App) =
@@ -29,7 +29,7 @@ proc renderApp(app: App) =
   app.engine.graphics.clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
 proc disposeApp(app: App) =
-  discard
+  app.engine.assetManager.unload("textures/unpacked/test01.png")
 
 startdEngine[App](
   (

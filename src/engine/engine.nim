@@ -51,6 +51,11 @@ proc startdEngine*[App](engineConfig: EngineConfig) =
     quit(QUIT_FAILURE)
   info "Graphics subsystem initialized."
 
+  echo "Initializing asset management subsystem..."
+  engine.assetManager = AssetManager()
+  engine.assetManager.init(engineConfig.assetRoot)
+  info "Asset management subsystem initialized."
+
   info "dEngine started."
 
   var app : App = App()
@@ -82,6 +87,10 @@ proc startdEngine*[App](engineConfig: EngineConfig) =
      # Limit CPU hit
     limitFrameRate()
   
+  info "Shutting down application..."
+  app.disposeApp()
+  info "Application shut down."
+
   info "Shutting down dEngine..."
   engine.graphics.shutdown()
   info "Goodbye."

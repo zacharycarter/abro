@@ -11,6 +11,7 @@ import
 type
   AssetManager* = ref TAssetManager
   TAssetManager* = object
+    assetSearchPath: string
     assets: Table[Hash, ref TAsset]
 
 proc dispose(assetManager: AssetManager, id: Hash) =
@@ -28,31 +29,34 @@ proc unload*(assetManager: AssetManager, id: Hash) =
   assetManager.dispose(id)
 
 proc unload*(assetManager: AssetManager, filename: string) =
-  let id = hash(filename)
+  let filepath = assetManager.assetSearchPath & filename
+  let id = hash(filepath)
   if not assetManager.assets.contains(id):
-    warn "Asset with filename : " & filename & " not loaded."
+    warn "Asset with filepath : " & filepath & " not loaded."
     return
     
   assetManager.dispose(id)
   
 
 proc load*(assetManager: AssetManager, filename: string, assetType: AssetType) : Hash =
-  if not fileExists(filename):
-    warn "File with filename : " & filename & " does not exist."
+  let filepath = assetManager.assetSearchPath & filename
+  if not fileExists(filepath):
+    warn "File with filepath : " & filepath & " does not exist."
     return
   
-  let id = hash(filename)
+  let id = hash(filepath)
   if assetManager.assets.contains(id):
-    warn "Asset with filename : " & filename & " already loaded."
+    warn "Asset with filepath : " & filepath & " already loaded."
     return
     
   case assetType
     of AssetType.TEXTURE:
-      var texture = texture.load(filename)
+      var texture = texture.load(filepath)
     #  echo repr texture
       texture.assetType = AssetType.TEXTURE
       assetManager.assets.add(id, texture)
   return id
 
-proc init*(assetManager: AssetManager) =
+proc init*(assetManager: AssetManager, assetRoot: string) =
   assetManager.assets = initTable[Hash, ref TAsset]()
+  assetManager.assetSearchPath = getAppDir() & DirSep & assetRoot & DirSep
