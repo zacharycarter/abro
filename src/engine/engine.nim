@@ -13,8 +13,8 @@ import
   , ../util/framerate
 
 type
-  dEngine* = ref TEngine
-  TEngine* = object
+  Context* = ref TContext
+  TContext* = object
     assetManager*: AssetManager
     eventBus: EventBus
     graphics*: Graphics
@@ -26,7 +26,7 @@ var now = sdl.getPerformanceCounter()
 proc startdEngine*[App](engineConfig: EngineConfig) =
   echo "Starting dEngine..."
 
-  var engine = dEngine()
+  var engine = Context()
 
   echo "Initializing logging subsystem..."
   initLogging()
@@ -59,8 +59,7 @@ proc startdEngine*[App](engineConfig: EngineConfig) =
   info "dEngine started."
 
   var app : App = App()
-  app.engine = engine
-  app.initApp()
+  app.initApp(engine)
 
   var
     event = sdl.defaultEvent
@@ -80,7 +79,7 @@ proc startdEngine*[App](engineConfig: EngineConfig) =
       else:
         engine.eventBus.dispatch(event)
     
-    app.renderApp()
+    app.renderApp(engine)
 
     engine.graphics.swap()
 
@@ -88,7 +87,7 @@ proc startdEngine*[App](engineConfig: EngineConfig) =
     limitFrameRate()
   
   info "Shutting down application..."
-  app.disposeApp()
+  app.disposeApp(engine)
   info "Application shut down."
 
   info "Shutting down dEngine..."
