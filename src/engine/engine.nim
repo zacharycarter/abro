@@ -5,7 +5,8 @@ import
   sdl2 as sdl
 
 import 
-  config/config
+  ../asset/asset_manager
+  , config/config
   , ../event/event_bus
   , ../graphics/graphics
   , ../log/log
@@ -14,8 +15,9 @@ import
 type
   dEngine* = ref TEngine
   TEngine* = object
+    assetManager*: AssetManager
     eventBus: EventBus
-    graphics: Graphics
+    graphics*: Graphics
 
 var last = 0'u64
 var deltaTime = 0'f64
@@ -52,7 +54,7 @@ proc startdEngine*[App](engineConfig: EngineConfig) =
   info "dEngine started."
 
   var app : App = App()
-
+  app.engine = engine
   app.initApp()
 
   var

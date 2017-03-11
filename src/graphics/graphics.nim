@@ -60,10 +60,10 @@ proc init*(graphics: Graphics, title: string, windowPosX, windowPosY: int, width
 
   return true
 
-proc clear*(clearFlags: GLbitfield) =
+proc clear*(graphics: Graphics, clearFlags: GLbitfield) =
   glClear(clearFlags)
 
-proc clearColor*(color: color.Color) =
+proc clearColor*(graphics: Graphics, color: color.Color) =
   glClearColor(color.r, color.g, color.b, color.a)
 
 proc swap*(graphics: Graphics) =

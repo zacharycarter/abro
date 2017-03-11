@@ -118,6 +118,7 @@ proc loadBMP*(filename: string) : Asset {.procvar.} =
 
   return texture
 ]#
+
 proc loadPNG*(filename: string) : Texture {.procvar.} =
   if not fileExists(filename):
     error "Unable to load PNG with filename : " & filename & " file does not exist!"
@@ -149,16 +150,19 @@ proc loadPNG*(filename: string) : Texture {.procvar.} =
   glBindTexture(GL_TEXTURE_2D, 0)
 
   return texture
-#[
-proc unloadTexture*(filename: string) {.procvar.} =
-  let texture = Texture get(filename)
-  if texture.isNil:
-    error "Unable to unload PNG with filename : " & filename
-    return
-  
+
+proc load*(filename: string): Texture =
+  let ext = splitFile(filename).ext
+  case ext
+  of ".png":
+    return loadPNG(filename)
+  else:
+    warn "Extension : " & ext & " not recognized."
+
+proc unload*(texture: Texture)  =
   glDeleteTextures(1, addr texture.handle)
   destroy(texture.data)
-]#
+
 proc setFilter*(texture: Texture, minFilter: GLint, maxFilter: GLint) =
   texture.`bind`()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter)

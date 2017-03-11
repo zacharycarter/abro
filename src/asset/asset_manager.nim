@@ -6,7 +6,7 @@ import
 
 import 
   asset
-  #, ../graphics/texture/texture
+  , ../graphics/twod/texture
 
 type
   AssetManager* = ref TAssetManager
@@ -15,8 +15,8 @@ type
 
 proc dispose(assetManager: AssetManager, id: Hash) =
   case assetManager.assets[id].assetType
-    #of AssetType.TEXTURE:
-    #  texture.unload(assetManager.assets[id])
+    of AssetType.TEXTURE:
+      texture.unload(assetManager.assets[id])
     else:
       warn "Unable to unload asset with unknown type."
 
@@ -46,12 +46,12 @@ proc load*(assetManager: AssetManager, filename: string, assetType: AssetType) :
     warn "Asset with filename : " & filename & " already loaded."
     return
     
-  #case assetType
-    #of AssetType.TEXTURE:
-    #  var texture = texture.load(filename)
+  case assetType
+    of AssetType.TEXTURE:
+      var texture = texture.load(filename)
     #  echo repr texture
-    #  texture.assetType = AssetType.TEXTURE
-    #  assetManager.assets.add(id, texture)
+      texture.assetType = AssetType.TEXTURE
+      assetManager.assets.add(id, texture)
   return id
 
 proc init*(assetManager: AssetManager) =
